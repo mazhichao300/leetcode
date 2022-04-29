@@ -66,18 +66,31 @@ func dfs(board [][]byte, row [][]int, col [][]int, block [][]int, x, y int) bool
 }
 
 func main() {
-
 	board := make([][]byte, 9)
-	board[0] = []byte{'5', '3', '.', '.', '7', '.', '.', '.', '.'}
-	board[1] = []byte{'6', '.', '.', '1', '9', '5', '.', '.', '.'}
-	board[2] = []byte{'.', '9', '8', '.', '.', '.', '.', '6', '.'}
-	board[3] = []byte{'8', '.', '.', '.', '6', '.', '.', '.', '3'}
-	board[4] = []byte{'4', '.', '.', '8', '.', '3', '.', '.', '1'}
-	board[5] = []byte{'7', '.', '.', '.', '2', '.', '.', '.', '6'}
-	board[6] = []byte{'.', '6', '.', '.', '.', '.', '2', '8', '.'}
-	board[7] = []byte{'.', '.', '.', '4', '1', '9', '.', '.', '5'}
-	board[8] = []byte{'.', '.', '.', '.', '8', '.', '.', '7', '9'}
-	fmt.Println(board)
+	input := []string{
+		"...3...4.",
+		"....1.2..",
+		".8...6..7",
+		"...4...3.",
+		"6....7..5",
+		"....2.1..",
+		"8.7..5...",
+		"92.......",
+		".56.....9",
+	}
+	for i := 0; i < 9; i++ {
+		board[i] = make([]byte, 9)
+		for j := 0; j < 9; j++ {
+			board[i][j] = input[i][j]
+		}
+	}
+
 	solveSudoku(board)
-	fmt.Println(board)
+	// fmt.Println(board)
+	for i := 0; i < len(board); i++ {
+		for j := 0; j < 9; j++ {
+			fmt.Print(int(board[i][j]-'0'), " ")
+		}
+		fmt.Println("")
+	}
 }
