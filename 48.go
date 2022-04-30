@@ -5,6 +5,18 @@ import "fmt"
 func rotate(matrix [][]int) {
 	n := len(matrix)
 	for i := 0; i < n/2; i++ {
+		start := i
+		end := n - i - 1
+
+		for j := i; j < end-1; j++ {
+
+		}
+	}
+}
+
+func rotate1(matrix [][]int) {
+	n := len(matrix)
+	for i := 0; i < n/2; i++ {
 		length := n - 2*i
 		step := length - 1
 		start := i
