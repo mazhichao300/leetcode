@@ -9,6 +9,22 @@ package main
  * }
  */
 func sumRootToLeaf(root *TreeNode) int {
+	return dfs(root, 0)
+}
+
+func dfs(root *TreeNode, sum int) int {
+	if root == nil {
+		return 0
+	}
+	newSum := sum<<1 + root.Val
+	if root.Left == nil && root.Right == nil {
+		return newSum
+	}
+
+	return dfs(root.Left, newSum) + dfs(root.Right, newSum)
+}
+
+func sumRootToLeaf1(root *TreeNode) int {
 	current := 0
 	ans := 0
 	rec(root, &current, &ans)
