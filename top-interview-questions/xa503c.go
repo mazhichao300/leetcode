@@ -3,6 +3,23 @@ package main
 import "fmt"
 
 func wordBreak(s string, wordDict []string) bool {
+	dp := make([]bool, len(s))
+
+	for i := 0; i < len(s); i++ {
+		for _, w := range wordDict {
+			if i+1 < len(w) {
+				continue
+			}
+			if s[i+1-len(w):i+1] == w && (i-len(w) < 0 || dp[i-len(w)]) {
+				dp[i] = true
+				break
+			}
+		}
+	}
+	return dp[len(s)-1]
+}
+
+func wordBreak1(s string, wordDict []string) bool {
 	dict := make(map[string]bool)
 	for _, d := range wordDict {
 		dict[d] = true
@@ -42,7 +59,7 @@ func dfs(s string, start, len int, dict map[string]bool) bool {
 
 func main() {
 	s := "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab"
-	wordDict := []string{"a", "aa", "aaa", "aaaa", "aaaaa", "aaaaaa", "aaaaaaa", "aaaaaaaa", "aaaaaaaaa", "aaaaaaaaaa"}
+	wordDict := []string{"a", "b", "aa", "aaa", "aaaa", "aaaaa", "aaaaaa", "aaaaaaa", "aaaaaaaa", "aaaaaaaaa", "aaaaaaaaaa"}
 	// s := "applepenapplea"
 	// wordDict := []string{"apple", "pen"}
 	ans := wordBreak(s, wordDict)
