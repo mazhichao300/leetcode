@@ -1,12 +1,16 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
 func findWords(board [][]byte, words []string) []string {
 	trie := Constructor()
 	for i := 0; i < len(board); i++ {
 		for j := 0; j < len(board[i]); j++ {
-			dfs(board, i, j, &map[string]bool{}, &[]byte{}, &trie)
+			fmt.Println(i, j)
+			dfs(&board, i, j, &trie)
 		}
 	}
 	ans := []string{}
@@ -18,11 +22,21 @@ func findWords(board [][]byte, words []string) []string {
 	return ans
 }
 
-func dfs(board [][]byte, i, j int, path *map[string]bool, str *[]byte, tree *Trie) {
-	key := fmt.Sprintf("%d_%d", i, j)
+func dfs(board *[][]byte, i, j int, tree *Trie) {
+	if i < 0 || i >= len(*board) || j < 0 || j >= len((*board)[0]) || (*board)[i][j] == '0' {
+		return
+	}
+	for x := 0; x < len(*board); x++ {
+		fmt.Println(string((*board)[x]))
+	}
+	fmt.Println("")
+	time.Sleep(time.Second * 1)
+	// fmt.Println(i, j, string(board[i][j]))
+	ch := (*board)[i][j]
+	tree.InsertByte(ch)
+	next := tree.Son[ch-'a']
 
-	(*path)[key] = true
-	*str = append(*str, board[i][j])
+	(*board)[i][j] = '0'
 
 	points := [][]int{
 		[]int{i, j + 1},
@@ -30,25 +44,12 @@ func dfs(board [][]byte, i, j int, path *map[string]bool, str *[]byte, tree *Tri
 		[]int{i - 1, j},
 		[]int{i + 1, j},
 	}
-	num := 0
+
 	for _, p := range points {
 		x, y := p[0], p[1]
-		if x < 0 || x >= len(board) || y < 0 || y >= len(board[0]) {
-			continue
-		}
-		k := fmt.Sprintf("%d_%d", x, y)
-		if t, ok := (*path)[k]; ok && t {
-			continue
-		}
-		dfs(board, x, y, path, str, tree)
-		num++
+		dfs(board, x, y, next)
 	}
-	// 找不到下一个路径，节点终结，压入trie
-	if num == 0 {
-		tree.Insert(string(*str))
-	}
-	(*path)[key] = false
-	*str = (*str)[0 : len(*str)-1]
+	(*board)[i][j] = ch
 }
 
 type Trie struct {
@@ -58,6 +59,14 @@ type Trie struct {
 
 func Constructor() Trie {
 	return Trie{}
+}
+
+func (this *Trie) InsertByte(w byte) {
+	cur := this
+	idx := int(w - 'a')
+	if cur.Son[idx] == nil {
+		cur.Son[idx] = &Trie{}
+	}
 }
 
 func (this *Trie) Insert(word string) {
@@ -97,5 +106,15 @@ func (this *Trie) StartsWith(prefix string) bool {
 }
 
 func main() {
-
+	m := [][]byte{}
+	for i := 0; i < 12; i++ {
+		y := []byte{}
+		for j := 0; j < 12; j++ {
+			y = append(y, 'a')
+		}
+		m = append(m, y)
+	}
+	s := []string{"a", "aa", "aaa", "aaaa", "aaaaa", "aaaaaa", "aaaaaaa", "aaaaaaaa", "aaaaaaaaa", "aaaaaaaaaa"}
+	ans := findWords(m, s)
+	fmt.Println(ans)
 }
