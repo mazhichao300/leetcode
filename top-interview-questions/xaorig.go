@@ -2,39 +2,42 @@ package main
 
 import (
 	"fmt"
-	"time"
 )
 
 func findWords(board [][]byte, words []string) []string {
 	trie := Constructor()
-	for i := 0; i < len(board); i++ {
-		for j := 0; j < len(board[i]); j++ {
-			fmt.Println(i, j)
-			dfs(&board, i, j, &trie)
-		}
+	for _, w := range words {
+		trie.Insert(w)
 	}
 	ans := []string{}
-	for _, w := range words {
-		if trie.StartsWith(w) {
-			ans = append(ans, w)
+	for i := 0; i < len(board); i++ {
+		for j := 0; j < len(board[i]); j++ {
+			dfs(&board, i, j, &ans, &[]byte{}, &trie)
 		}
 	}
+
 	return ans
 }
 
-func dfs(board *[][]byte, i, j int, tree *Trie) {
+func dfs(board *[][]byte, i, j int, ans *[]string, path *[]byte, tree *Trie) {
 	if i < 0 || i >= len(*board) || j < 0 || j >= len((*board)[0]) || (*board)[i][j] == '0' {
 		return
 	}
-	for x := 0; x < len(*board); x++ {
-		fmt.Println(string((*board)[x]))
-	}
-	fmt.Println("")
-	time.Sleep(time.Second * 1)
-	// fmt.Println(i, j, string(board[i][j]))
+
 	ch := (*board)[i][j]
-	tree.InsertByte(ch)
-	next := tree.Son[ch-'a']
+	idx := int(ch - 'a')
+	if tree.Son[idx] == nil {
+		return
+	}
+
+	next := tree.Son[idx]
+
+	*path = append(*path, ch)
+
+	if next.Cnt > 0 {
+		*ans = append(*ans, string(*path))
+		next.Cnt--
+	}
 
 	(*board)[i][j] = '0'
 
@@ -47,14 +50,15 @@ func dfs(board *[][]byte, i, j int, tree *Trie) {
 
 	for _, p := range points {
 		x, y := p[0], p[1]
-		dfs(board, x, y, next)
+		dfs(board, x, y, ans, path, next)
 	}
 	(*board)[i][j] = ch
+	*path = (*path)[0 : len(*path)-1]
 }
 
 type Trie struct {
-	Son   [26]*Trie
-	IsEnd bool
+	Son [26]*Trie
+	Cnt int
 }
 
 func Constructor() Trie {
@@ -78,7 +82,7 @@ func (this *Trie) Insert(word string) {
 		}
 		cur = cur.Son[idx]
 	}
-	cur.IsEnd = true
+	cur.Cnt++
 }
 
 func (this *Trie) Search(word string) bool {
@@ -90,7 +94,7 @@ func (this *Trie) Search(word string) bool {
 		}
 		cur = cur.Son[idx]
 	}
-	return cur.IsEnd
+	return cur.Cnt > 0
 }
 
 func (this *Trie) StartsWith(prefix string) bool {
