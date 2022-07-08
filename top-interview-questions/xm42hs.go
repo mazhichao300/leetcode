@@ -8,19 +8,35 @@ func rotate(nums []int, k int) {
 	if k == 0 {
 		return
 	}
-	t := nums[0]
+
+	cnt := l
+
 	idx := 0
-	for i := 1; i < l; i++ {
-		pre := (idx - k + l) % l
-		fmt.Println(idx, pre)
-		nums[idx] = nums[pre]
-		idx = pre
+	for {
+		start := idx
+		t := nums[idx]
+		for {
+			cnt--
+			pre := (idx - k + l) % l
+			// fmt.Println(idx, pre)
+			nums[idx] = nums[pre]
+
+			if pre == start {
+				nums[idx] = t
+				break
+			}
+			idx = pre
+
+		}
+		idx++
+		if cnt <= 0 {
+			break
+		}
 	}
-	nums[idx] = t
 }
 
 func main() {
-	a := []int{-1, -100, 3, 99}
+	a := []int{-1, -100, 3, 99, 3}
 	rotate(a, 2)
 	fmt.Println(a)
 }
