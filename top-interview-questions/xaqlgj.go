@@ -1,13 +1,16 @@
 package main
 
-import "strconv"
+import (
+	"fmt"
+	"strconv"
+)
 
 func evalRPN(tokens []string) int {
 	stack := []int{}
 	for _, s := range tokens {
 		l := len(stack)
 		n1, n2 := 0, 0
-		if l > 2 {
+		if l >= 2 {
 			n1 = stack[l-1]
 			n2 = stack[l-2]
 		}
@@ -33,5 +36,12 @@ func evalRPN(tokens []string) int {
 			stack = append(stack, n)
 		}
 	}
+	// fmt.Println(stack)
 	return stack[0]
+}
+
+func main() {
+	s := []string{"2", "1", "+", "3", "*"}
+	ans := evalRPN(s)
+	fmt.Println(ans)
 }
