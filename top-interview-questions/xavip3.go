@@ -24,4 +24,5 @@ func reverseListR(head *ListNode) *ListNode {
 	}
 
 	next := head.Next
+	
 }
