@@ -1,12 +1,50 @@
 package main
 
-func dailyTemperatures(temperatures []int) []int {
-	l := len(temperatures)
-	maxIdx, max := l-1, temperatures[l-1]
+type Node struct {
+	Idx int
+	Val int
+}
+
+func dailyTemperatures1(temperatures []int) []int {
+	stack := []*Node{}
 	ans := make([]int, len(temperatures))
-	for i := len(temperatures) - 2; i >= 0; i-- {
-		if temperatures[i] < max {
-			ans[i] = maxIdx - i
+	for i, v := range temperatures {
+		for len(stack) > 0 && stack[len(stack)-1].Val < v {
+			n := stack[len(stack)-1]
+			ans[n.Idx] = i - n.Idx
+			stack = stack[:len(stack)-1]
 		}
+		stack = append(stack, &Node{i, v})
 	}
+	return ans
+}
+
+func dailyTemperatures2(temperatures []int) []int {
+	stack := []int{}
+	ans := make([]int, len(temperatures))
+	for i, v := range temperatures {
+		for len(stack) > 0 && temperatures[stack[len(stack)-1]] < v {
+			n := stack[len(stack)-1]
+			ans[n] = i - n
+			stack = stack[:len(stack)-1]
+		}
+		stack = append(stack, i)
+	}
+	return ans
+}
+
+func dailyTemperatures(temperatures []int) []int {
+	stack := make([]int, len(temperatures))
+	ans := make([]int, len(temperatures))
+	length := 0
+	for i, v := range temperatures {
+		for length > 0 && temperatures[stack[length-1]] < v {
+			n := stack[length-1]
+			ans[n] = i - n
+			length--
+		}
+		stack[length] = i
+		length++
+	}
+	return ans
 }
